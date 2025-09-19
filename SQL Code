@@ -1,0 +1,55 @@
+-- ==========================
+-- Employees Table
+-- ==========================
+CREATE TABLE employees (
+    employee_id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    job_role VARCHAR(255)
+);
+
+-- ==========================
+-- Tasks Table
+-- ==========================
+CREATE TABLE tasks (
+    task_id SERIAL PRIMARY KEY,
+    employee_id INTEGER NOT NULL,
+    task_date DATE NOT NULL,
+    duration_hours NUMERIC(5,2),
+    description TEXT,
+    priority VARCHAR(50),
+    status VARCHAR(50),
+    outcome TEXT,
+    CONSTRAINT fk_tasks_employee FOREIGN KEY (employee_id) 
+        REFERENCES employees(employee_id) ON DELETE CASCADE
+);
+
+-- ==========================
+-- Goals Table
+-- ==========================
+CREATE TABLE goals (
+    goal_id SERIAL PRIMARY KEY,
+    employee_id INTEGER NOT NULL,
+    goal_description TEXT NOT NULL,
+    goal_type VARCHAR(50), -- e.g., 'Personal', 'Professional'
+    target_value INTEGER,
+    start_date DATE,
+    end_date DATE,
+    status VARCHAR(50), -- e.g., 'In Progress', 'Achieved'
+    CONSTRAINT fk_goals_employee FOREIGN KEY (employee_id) 
+        REFERENCES employees(employee_id) ON DELETE CASCADE
+);
+
+-- ==========================
+-- Performance Network Table
+-- ==========================
+CREATE TABLE performance_network (
+    network_id SERIAL PRIMARY KEY,
+    employee_id INTEGER NOT NULL,
+    colleague_id INTEGER NOT NULL,
+    CONSTRAINT fk_network_employee FOREIGN KEY (employee_id) 
+        REFERENCES employees(employee_id) ON DELETE CASCADE,
+    CONSTRAINT fk_network_colleague FOREIGN KEY (colleague_id) 
+        REFERENCES employees(employee_id) ON DELETE CASCADE,
+    CONSTRAINT uq_network UNIQUE (employee_id, colleague_id)
+);
